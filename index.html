@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>If Women Ran the World</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Cormorant+SC:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+```
+:root {
+  --ink: #1a1714;
+  --ink-light: #4a4540;
+  --ink-muted: #8a847e;
+  --cream: #faf8f4;
+  --warm: #f0ebe2;
+  --accent: #8b5e3c;
+  --accent-light: #c4956a;
+  --rule: #d4cdc4;
+  --col: 680px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 20px;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── PROGRESS BAR ── */
+#progress {
+  position: fixed; top: 0; left: 0; height: 2px;
+  background: var(--accent); width: 0%;
+  z-index: 100; transition: width 0.1s linear;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 18px 48px;
+  background: rgba(250,248,244,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  z-index: 90;
+}
+nav.scrolled {
+  border-color: var(--rule);
+  box-shadow: 0 1px 20px rgba(26,23,20,0.06);
+}
+.nav-brand {
+  font-family: 'Cormorant SC', serif;
+  font-size: 13px; font-weight: 400;
+  letter-spacing: 0.2em;
+  color: var(--ink-muted);
+  text-decoration: none;
+}
+.nav-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px; font-weight: 400;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 48px 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 70% 30%, rgba(196,149,106,0.10) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 20% 80%, rgba(139,94,60,0.06) 0%, transparent 50%),
+    var(--cream);
+}
+
+.hero-ornament {
+  position: absolute;
+  top: 120px; right: 48px;
+  font-family: 'Cormorant SC', serif;
+  font-size: 11px; letter-spacing: 0.3em;
+  color: var(--accent-light);
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  opacity: 0.6;
+}
+
+.hero-content { position: relative; max-width: var(--col); }
+
+.hero-eyebrow {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px; font-weight: 400;
+  letter-spacing: 0.25em; text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 28px;
+  opacity: 0;
+  animation: fadeUp 0.8s ease forwards 0.2s;
+}
+
+h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(52px, 8vw, 96px);
+  font-weight: 300;
+  line-height: 1.0;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 12px;
+  opacity: 0;
+  animation: fadeUp 1s ease forwards 0.4s;
+}
+
+h1 em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.hero-subtitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--ink-light);
+  margin-bottom: 48px;
+  max-width: 520px;
+  opacity: 0;
+  animation: fadeUp 1s ease forwards 0.6s;
+}
+
+.hero-meta {
+  display: flex; gap: 40px; align-items: center;
+  opacity: 0;
+  animation: fadeUp 1s ease forwards 0.8s;
+}
+.hero-meta-item {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px; color: var(--ink-muted);
+  letter-spacing: 0.05em;
+}
+.hero-meta-divider { width: 1px; height: 20px; background: var(--rule); }
+
+.scroll-hint {
+  position: absolute; bottom: 32px; right: 48px;
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px; color: var(--ink-muted);
+  letter-spacing: 0.1em;
+  opacity: 0;
+  animation: fadeIn 1.2s ease forwards 1.2s;
+}
+.scroll-hint::before {
+  content: '';
+  display: block; width: 1px; height: 40px;
+  background: var(--accent-light);
+  animation: scrollLine 2s ease-in-out infinite 1.5s;
+}
+
+/* ── ARTICLE LAYOUT ── */
+article {
+  max-width: var(--col);
+  margin: 0 auto;
+  padding: 80px 24px 120px;
+}
+
+/* ── AUTHOR'S NOTE ── */
+.authors-note {
+  background: var(--warm);
+  border-left: 3px solid var(--accent-light);
+  padding: 32px 40px;
+  margin-bottom: 72px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.authors-note.visible { opacity: 1; transform: translateY(0); }
+.authors-note-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px; font-weight: 500;
+  letter-spacing: 0.25em; text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+.authors-note p {
+  font-size: 18px;
+  line-height: 1.7;
+  color: var(--ink-light);
+  margin-bottom: 12px;
+}
+.authors-note p:last-child { margin-bottom: 0; }
+
+/* ── SECTIONS ── */
+.section {
+  margin-bottom: 80px;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.section.visible { opacity: 1; transform: translateY(0); }
+
+.section-header {
+  display: flex; align-items: flex-start; gap: 24px;
+  margin-bottom: 40px;
+}
+.section-number {
+  font-family: 'Cormorant SC', serif;
+  font-size: 11px; font-weight: 300;
+  letter-spacing: 0.2em;
+  color: var(--accent-light);
+  padding-top: 6px;
+  min-width: 24px;
+}
+.section-title-block { flex: 1; }
+.section-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px; font-weight: 400;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--ink-muted);
+  margin-bottom: 8px;
+}
+h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 400;
+  line-height: 1.15;
+  color: var(--ink);
+}
+h2 em { font-style: italic; color: var(--accent); }
+
+h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 500;
+  font-style: italic;
+  color: var(--ink-light);
+  margin: 48px 0 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--rule);
+}
+
+/* ── PROSE ── */
+p {
+  font-size: 20px;
+  line-height: 1.8;
+  color: var(--ink);
+  margin-bottom: 24px;
+}
+p:last-child { margin-bottom: 0; }
+
+.drop-cap::first-letter {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 5.2em;
+  font-weight: 300;
+  line-height: 0.75;
+  float: left;
+  margin: 0.08em 0.1em 0 0;
+  color: var(--accent);
+}
+
+/* ── PULL QUOTE ── */
+.pull-quote {
+  margin: 56px -32px;
+  padding: 40px 40px 40px 48px;
+  border-left: 4px solid var(--accent);
+  background: linear-gradient(to right, rgba(139,94,60,0.04), transparent);
+}
+.pull-quote p {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 300;
+  font-style: italic;
+  line-height: 1.45;
+  color: var(--ink);
+  margin-bottom: 16px;
+}
+.pull-quote cite {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--ink-muted);
+  font-style: normal;
+}
+
+/* ── STAT CALLOUT ── */
+.stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  margin: 48px 0;
+  background: var(--rule);
+}
+.stat-item {
+  background: var(--cream);
+  padding: 28px 32px;
+}
+.stat-number {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 48px;
+  font-weight: 300;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.stat-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  color: var(--ink-muted);
+  line-height: 1.5;
+}
+
+/* ── RULE DIVIDER ── */
+.rule {
+  display: flex; align-items: center; gap: 20px;
+  margin: 64px 0;
+}
+.rule::before, .rule::after {
+  content: ''; flex: 1;
+  height: 1px; background: var(--rule);
+}
+.rule-ornament {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  color: var(--accent-light);
+}
+
+/* ── CLOSING ── */
+.closing {
+  margin-top: 80px;
+  padding: 64px 0 0;
+  border-top: 2px solid var(--ink);
+}
+.closing-statement {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 32px;
+  font-weight: 300;
+  font-style: italic;
+  line-height: 1.4;
+  color: var(--ink);
+  margin-bottom: 40px;
+}
+.closing-statement em { color: var(--accent); font-style: normal; }
+
+/* ── SOURCES ── */
+.sources {
+  margin-top: 80px;
+  padding-top: 40px;
+  border-top: 1px solid var(--rule);
+}
+.sources-title {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px; font-weight: 500;
+  letter-spacing: 0.25em; text-transform: uppercase;
+  color: var(--ink-muted);
+  margin-bottom: 24px;
+}
+.sources ol {
+  padding-left: 20px;
+}
+.sources li {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  color: var(--ink-muted);
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+
+/* ── FOOTER ── */
+footer {
+  text-align: center;
+  padding: 48px 24px;
+  border-top: 1px solid var(--rule);
+}
+footer p {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  color: var(--ink-muted);
+  letter-spacing: 0.05em;
+  margin-bottom: 0;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; } to { opacity: 1; }
+}
+@keyframes scrollLine {
+  0%, 100% { transform: scaleY(1); opacity: 1; }
+  50%       { transform: scaleY(0.4); opacity: 0.4; }
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 640px) {
+  nav { padding: 16px 24px; }
+  .hero { padding: 0 24px 64px; }
+  .hero-ornament { display: none; }
+  .pull-quote { margin: 40px 0; }
+  .stat-grid { grid-template-columns: 1fr; }
+  .scroll-hint { display: none; }
+}
+```
+
+  </style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<nav id="nav">
+  <a class="nav-brand" href="#">Essay</a>
+  <span class="nav-label">If Women Ran the World</span>
+</nav>
+
+<!-- HERO -->
+
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-ornament">On Power & Governance</div>
+
+  <div class="hero-content">
+    <p class="hero-eyebrow">A Personal Essay</p>
+    <h1>If Women<br><em>Ran the World</em></h1>
+    <p class="hero-subtitle">A serious look at what matriarchy would — and wouldn't — fix</p>
+    <div class="hero-meta">
+      <span class="hero-meta-item">Personal Essay</span>
+      <div class="hero-meta-divider"></div>
+      <span class="hero-meta-item">On Power, Leadership & Governance</span>
+      <div class="hero-meta-divider"></div>
+      <span class="hero-meta-item">2026</span>
+    </div>
+  </div>
+
+  <div class="scroll-hint">Scroll</div>
+</section>
+
+<!-- ARTICLE -->
+
+<article>
+
+  <!-- Author's Note -->
+
+  <div class="authors-note scroll-reveal">
+    <div class="authors-note-label">A note before we begin</div>
+    <p>I want to be honest about where this came from. I was watching the news — the missiles, the rhetoric, the posturing between Israel, Iran, and the United States — and something in me snapped quietly. Not with rage, but with a kind of exhausted clarity.</p>
+    <p>I found myself thinking: we have tried this way, the way of dominance and deterrence and who-blinks-first, for a very long time now. And I started wondering, with genuine curiosity rather than naivety, what the alternative might actually look like. Not as a fantasy. As a serious question. This is my attempt to answer it honestly — which means celebrating what the evidence supports and confronting what it doesn't.</p>
+  </div>
+
+  <!-- Section 1 -->
+
+  <section class="section scroll-reveal">
+    <div class="section-header">
+      <span class="section-number">I</span>
+      <div class="section-title-block">
+        <div class="section-label">Origin</div>
+        <h2>The Experiment I Ran<br><em>as a Girl</em></h2>
+      </div>
+    </div>
+
+```
+<p class="drop-cap">I used to spend a lot of time on the playground figuring out how people work. Not intentionally — I was a kid — but looking back, I was running something close to a social experiment without knowing it.</p>
+
+<p>When I played with other girls, something interesting happened. Before the game even started, we would plan it. Who would play which role, how the story would go, what we would do if someone got bored or felt left out. It sounds simple, but there was real sophistication in it. We were constantly reading the room — noticing if someone had gone quiet, adjusting the game so that everyone had a stake in it, making sure the afternoon actually worked for all of us. Not perfectly, not always. But the intention was there, and it shaped everything.</p>
+
+<p>Then I started playing with boys too, and I noticed something completely different. There was usually one kid — the one everyone considered the coolest, the boldest, the one who had that magnetic, slightly intimidating quality — and the game was essentially whatever he wanted it to be. The rest of us orbited him. Most of the time, nobody said out loud that they didn't want to play that way. We just went along. Until someone didn't, and then there was a confrontation, and then a new kid became the center of gravity, and the whole cycle started over.</p>
+
+<div class="pull-quote scroll-reveal">
+  <p>"The girl group was quieter and more stable. The boy group was more dramatic and more brittle."</p>
+  <cite>On two governance models, observed at age eight</cite>
+</div>
+
+<p>I eventually spent more time with the girls — not because boys were bad, but because the structure made more sense to me. It was more interesting to build something together than to figure out where you ranked.</p>
+
+<p>I have thought about that difference a lot since then. And what I kept coming back to, watching the news this week, is this: the men running the Middle East right now are playing the boy game. The question I want to ask is whether there is another game, and what it would actually look like.</p>
+```
+
+  </section>
+
+  <div class="rule scroll-reveal"><span class="rule-ornament">✦</span></div>
+
+  <!-- Section 2 -->
+
+  <section class="section scroll-reveal">
+    <div class="section-header">
+      <span class="section-number">II</span>
+      <div class="section-title-block">
+        <div class="section-label">History &amp; Anthropology</div>
+        <h2>What a Matriarchy<br><em>Actually Is</em></h2>
+      </div>
+    </div>
+
+```
+<p class="drop-cap">Matriarchy is one of the most misused words in modern discourse. People tend to assume it simply means "women in charge" — a mirror image of patriarchy with the genders swapped. It is more interesting and more complex than that.</p>
+
+<p>The word comes from the Latin <em>mater</em>, meaning mother, and the Greek <em>arkhein</em>, to rule. In anthropological use, it describes societies organized through the female line — where descent, inheritance, land rights, and clan identity flow through women. These societies exist, they are not small or obscure, and they give us real data rather than speculation.</p>
+
+<p>The Minangkabau of West Sumatra, Indonesia, are the world's largest matrilineal society — around 4.2 million people. Property and family names pass through women. Clan mothers hold authority over land and mediate disputes. The Mosuo of southwestern China practice what they call "walking marriage," in which women control households and children belong entirely to the mother's family. The Khasi of Meghalaya in northeast India organize everything — inheritance, clan belonging, political voice — through the maternal line. These are not ancient relics. They are functioning, contemporary societies.</p>
+
+<p>What is striking about them is not that women dominate men the way men have historically dominated women. What is striking is the different quality of the authority. It tends to be distributed rather than concentrated, relational rather than coercive, oriented toward continuity rather than conquest.</p>
+
+<div class="stat-grid scroll-reveal">
+  <div class="stat-item">
+    <div class="stat-number">4.2M</div>
+    <div class="stat-label">People in the Minangkabau society — the world's largest matrilineal culture, active today in Indonesia</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">~95%</div>
+    <div class="stat-label">Of human evolutionary history spent in hunter-gatherer bands, which showed significantly more gender egalitarianism than agricultural societies</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">3+</div>
+    <div class="stat-label">Major matrilineal societies functioning today: Minangkabau, Mosuo, Khasi — plus dozens of smaller lineage systems worldwide</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">1 Book</div>
+    <div class="stat-label">Graeber & Wengrow's <em>The Dawn of Everything</em> (2021) argues early human societies were far more organizationally diverse than assumed</div>
+  </div>
+</div>
+
+<p>There is also a deeper historical argument. Anthropologists like Christopher Boehm have shown that hunter-gatherer societies — the model humans lived by for the vast majority of our existence — were significantly more egalitarian than the agricultural civilizations that followed. The intensification of hierarchy, including patriarchal hierarchy, appears to correlate strongly with the accumulation of property and the need to establish paternity for inheritance. In other words: patriarchy may not be human nature. It may be a design choice that got locked in.</p>
+```
+
+  </section>
+
+  <div class="rule scroll-reveal"><span class="rule-ornament">✦</span></div>
+
+  <!-- Section 3 -->
+
+  <section class="section scroll-reveal">
+    <div class="section-header">
+      <span class="section-number">III</span>
+      <div class="section-title-block">
+        <div class="section-label">Research &amp; Evidence</div>
+        <h2>What the Science<br><em>Actually Shows</em></h2>
+      </div>
+    </div>
+
+```
+<h3>On emotion and rationality</h3>
+
+<p class="drop-cap">The oldest argument against women in leadership is that they are too emotional to make clear-headed decisions under pressure. I want to address this directly, because it is the argument I have heard most often and it deserves a serious response rather than a dismissal.</p>
+
+<p>Women do, on average, score higher on measures of emotional intelligence — the ability to identify, understand, and work skillfully with emotions, both their own and other people's. A 2019 meta-analysis in <em>Psychological Bulletin</em>, covering 94 studies and over 15,000 participants, confirmed this across cultures.</p>
+
+<p>Here is what gets lost in the argument against female leadership: emotional intelligence is not the opposite of rationality. It is, as Daniel Goleman's foundational Harvard research showed, one of the strongest predictors of effective leadership — more predictive than IQ, technical expertise, or strategic knowledge. The ability to read a room, to understand how your decisions will land on the people they affect, to maintain trust under pressure — these are strategic capabilities, not softness.</p>
+
+<div class="pull-quote scroll-reveal">
+  <p>"The institutions that nearly destroyed the global economy were not run by emotional women. They were run by men who were, in a very specific and physiological sense, too emotional to think straight."</p>
+  <cite>On the 2008 financial crisis and testosterone-driven risk-taking</cite>
+</div>
+
+<h3>On collective intelligence</h3>
+
+<p>In 2010, researchers at Carnegie Mellon published a study in <em>Science</em> that measured something they called collective intelligence — the ability of groups to solve a wide range of problems together. They found that group performance was not determined by the IQ of the smartest person in the room, nor by average IQ. The single strongest predictor of a group's collective intelligence was the proportion of women in it.</p>
+
+<p>This is the girl-group dynamic I grew up watching, measured in a laboratory.</p>
+
+<h3>On national leadership</h3>
+
+<p>The COVID-19 pandemic offered something rare in political science: a natural experiment in leadership styles across comparable conditions. A 2021 study published in <em>The Lancet</em> found that countries led by women during the pandemic had significantly better health outcomes — lower death rates, faster policy responses — even after controlling for national wealth and population size.</p>
+
+<p>The Nordic countries are the most sustained example. Norway, Sweden, Finland, Denmark, and Iceland have built the highest-ranked quality of life, press freedom, and social trust in the world. They have done it through flat hierarchies, strong institutional cooperation, and high female political participation. They are not dominant in the traditional sense. They are simply, measurably, among the best-governed places on earth.</p>
+```
+
+  </section>
+
+  <div class="rule scroll-reveal"><span class="rule-ornament">✦</span></div>
+
+  <!-- Section 4 -->
+
+  <section class="section scroll-reveal">
+    <div class="section-header">
+      <span class="section-number">IV</span>
+      <div class="section-title-block">
+        <div class="section-label">Vision</div>
+        <h2>What Such a System<br><em>Would Prioritize</em></h2>
+      </div>
+    </div>
+
+```
+<p class="drop-cap">Drawing on the research, the existing models, and the patterns of female leadership, a genuinely matriarchal governance system would not be patriarchy with different faces at the top. It would prioritize fundamentally different things.</p>
+
+<h3>Long-term over short-term</h3>
+<p>Studies of female CEO decision-making show a consistent preference for longer investment horizons, lower risk tolerance, and less manipulation of short-term earnings. A 2018 study in the <em>Journal of Corporate Finance</em> found that firms with female CEOs engaged significantly less in earnings management. Applied to governance, this would mean policies built around decades rather than election cycles: climate, infrastructure, education, public health.</p>
+
+<h3>Care as a political priority</h3>
+<p>Perhaps the most transformative shift in a genuinely matriarchal system would be the revaluation of care work. Childcare, elder care, community maintenance — the labor that holds society together — is currently worth an estimated $10.8 trillion globally according to Oxfam, and almost none of it appears in economic statistics or political platforms. It is done overwhelmingly by women and treated as if it is not quite real work. A matriarchal system would put care at the center of economic and political life rather than at the margins of it.</p>
+
+<h3>Coalition over domination</h3>
+<p>The dominant model of geopolitics is zero-sum: one country's strength is another's weakness, and security comes from your ability to threaten others more credibly than they can threaten you. The matriarchal model would more likely treat security as something built through interdependence, reciprocal obligation, and the maintenance of relationships. This is not naive. It is, in fact, the logic that underlies the most successful international institutions ever created. The European Union has kept peace on a continent that fought two catastrophic world wars within thirty years — not through military dominance, but through economic integration and shared institutions.</p>
+```
+
+  </section>
+
+  <div class="rule scroll-reveal"><span class="rule-ornament">✦</span></div>
+
+  <!-- Section 5 -->
+
+  <section class="section scroll-reveal">
+    <div class="section-header">
+      <span class="section-number">V</span>
+      <div class="section-title-block">
+        <div class="section-label">The Honest Reckoning</div>
+        <h2>What I Won't<br><em>Pretend Away</em></h2>
+      </div>
+    </div>
+
+```
+<p class="drop-cap">I want to be careful not to trade one mythology for another. An honest case for matriarchal governance has to confront the places where the evidence is uncomfortable.</p>
+
+<h3>Scale is a genuine problem</h3>
+<p>The most compelling matriarchal societies — the Mosuo, the Minangkabau, the Khasi — are relatively small and geographically contained. Consensus-based, relationship-driven governance works beautifully at that scale. Whether it translates to a country of 330 million people, or to the management of nuclear arsenals and global supply chains, is a genuinely open question. The Nordic model is instructive, but it operates in small, historically high-trust societies. Assuming it ports directly to everywhere else is wishful thinking.</p>
+
+<h3>Hard power is still real</h3>
+<p>Watching what is happening between Israel, Iran, and the United States right now, I cannot pretend that good intentions and collaborative frameworks are sufficient in a world where other actors operate on entirely different logic. Empathy is a strategic asset — but these advantages erode quickly when you are facing someone who reads cooperation as vulnerability and is willing to use force. I do not have a clean answer to this. I think it is a real problem.</p>
+
+<h3>Women are not a monolith</h3>
+<p>This is perhaps the most important caution. Margaret Thatcher governed as a hard-line authoritarian who dismantled social programs and took her country to war. Indira Gandhi declared a state of emergency and suspended democratic processes. A system that simply installs women in positions of power does not automatically produce more empathetic governance. The goal is not to replace one kind of concentrated power with another. It is to redesign the structure itself.</p>
+
+<h3>Female competition is real too</h3>
+<p>I know this from the playground too. The girl group I described was more inclusive than the boy group — but it was not without its own forms of hierarchy and exclusion. Relational aggression, social policing, the subtle punishment of those who do not conform — these are real and documented patterns. A matriarchal system would need to reckon honestly with these tendencies rather than assume they disappear when women hold power.</p>
+```
+
+  </section>
+
+  <div class="rule scroll-reveal"><span class="rule-ornament">✦</span></div>
+
+  <!-- Closing -->
+
+  <section class="section scroll-reveal closing">
+    <div class="section-header">
+      <span class="section-number">VI</span>
+      <div class="section-title-block">
+        <div class="section-label">Conclusion</div>
+        <h2>What I<br><em>Actually Think</em></h2>
+      </div>
+    </div>
+
+```
+<p class="drop-cap">I started this piece looking at missiles and fire in the Middle East and asking myself a quiet, furious question: is there another way? The answer I have arrived at is yes — but not in the way the question might suggest.</p>
+
+<p>The problem is not simply that men are in charge. The problem is that the entire architecture of modern power — concentrated authority, zero-sum competition, short-termism, the systematic devaluation of care and cooperation — was built around a particular set of values. Those values have produced extraordinary things: unprecedented wealth, scientific progress, a reduction in absolute poverty. They have also produced the situation I was watching on the news this week: brilliant, powerful people with enormous resources making everyone less safe.</p>
+
+<p>The evidence consistently points toward a different set of organizing principles — distributed authority, long-term thinking, care as a genuine political priority, emotional intelligence as a strategic asset rather than a liability. Not because women are morally superior. But because these values have been systematically excluded from the rooms where decisions get made, and their absence has costs we are all now paying.</p>
+
+<p>What I took from my childhood was not that girls are better than boys. What I took was that one way of organizing a group produces more stability, more genuine participation, and more durable outcomes than the other. The girl group I helped build was not perfect. But when someone new arrived, we found a place for them. When someone went quiet, we noticed. And we were still friends at the end of the afternoon.</p>
+
+<div class="closing-statement scroll-reveal">
+  "That seems worth building toward —<br><em>at any scale.</em>"
+</div>
+```
+
+  </section>
+
+  <!-- Sources -->
+
+  <div class="sources scroll-reveal">
+    <div class="sources-title">Key Research &amp; Sources</div>
+    <ol>
+      <li>Woolley, A. et al. (2010). Evidence for a Collective Intelligence Factor in the Performance of Human Groups. <em>Science</em>, 330(6004).</li>
+      <li>Goleman, D. (1998). What Makes a Leader? <em>Harvard Business Review</em>.</li>
+      <li>Coates, J. (2012). <em>The Hour Between Dog and Wolf</em>. Penguin Press.</li>
+      <li>Oxfam (2020). Time to Care: Unpaid and Underpaid Care Work and the Global Inequality Crisis.</li>
+      <li>The Lancet (2021). Leading by Example: Female World Leaders and COVID-19 Outcomes.</li>
+      <li>Journal of Economic Behavior and Organization (2019). Gender and Environmental Policy.</li>
+      <li>Psychological Bulletin (2019). Gender Differences in Interpersonal Sensitivity: A Meta-Analysis covering 94 studies and 15,000+ participants.</li>
+      <li>Boehm, C. (1999). <em>Hierarchy in the Forest: The Evolution of Egalitarian Behavior</em>. Harvard University Press.</li>
+      <li>Journal of Corporate Finance (2018). Female CEOs and Earnings Management.</li>
+      <li>Graeber, D. &amp; Wengrow, D. (2021). <em>The Dawn of Everything</em>. Farrar, Straus and Giroux.</li>
+    </ol>
+  </div>
+
+</article>
+
+<footer>
+  <p>A personal essay on power, governance, and what the evidence actually suggests.</p>
+</footer>
+
+<script>
+  // Progress bar
+  const progress = document.getElementById('progress');
+  const nav = document.getElementById('nav');
+
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    progress.style.width = (scrollTop / docHeight * 100) + '%';
+    nav.classList.toggle('scrolled', scrollTop > 60);
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.scroll-reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+  reveals.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>o
